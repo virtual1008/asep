@@ -4,6 +4,7 @@ import com.asep.common.response.ApiResponse;
 import com.asep.workspace.dto.CreateWorkspaceRequest;
 import com.asep.workspace.dto.WorkspaceResponse;
 import com.asep.workspace.service.WorkspaceService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/workspaces")
+@Tag(name = "Workspace APIs")
 public class WorkspaceController {
     private final WorkspaceService workspaceService;
 

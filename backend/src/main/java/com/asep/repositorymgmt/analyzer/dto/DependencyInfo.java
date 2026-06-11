@@ -1,17 +1,22 @@
 package com.asep.repositorymgmt.analyzer.dto;
 
 public class DependencyInfo {
-    private final String name;
+    private final String groupId;
+    private final String artifactId;
     private final String version;
-    public DependencyInfo(String name , String version){
-        this.name = name;
+    public DependencyInfo(String groupId ,String artifactId, String version){
+        this.groupId = groupId;
+        this.artifactId = artifactId;
         this.version = version;
     }
 
-    public String getName() {
-        return name;
+    public String getArtifactId() {
+        return artifactId;
     }
 
+    public String getGroupId() {
+        return groupId;
+    }
     public String getVersion() {
         return version;
     }

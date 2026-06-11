@@ -57,6 +57,9 @@ public class Repository extends BaseEntity {
     @Column(name = "build_tool")
     private String buildTool;
 
+    @Column(name = "language_version")
+    private String languageVersion;
+
     public UUID getId() {
         return id;
     }
@@ -151,5 +154,13 @@ public class Repository extends BaseEntity {
 
     public void setAnalyzedAt(LocalDateTime analyzedAt) {
         this.analyzedAt = analyzedAt;
+    }
+
+    public String getLanguageVersion() {
+        return languageVersion;
+    }
+
+    public void setLanguageVersion(String languageVersion) {
+        this.languageVersion = languageVersion;
     }
 }

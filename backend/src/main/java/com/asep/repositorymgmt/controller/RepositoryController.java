@@ -2,11 +2,13 @@ package com.asep.repositorymgmt.controller;
 
 import com.asep.common.response.ApiResponse;
 import com.asep.repositorymgmt.analyzer.RepositoryAnalyzerService;
-import com.asep.repositorymgmt.analyzer.dto.RepositoryAnalysisResult;
+import com.asep.repositorymgmt.analyzer.RepositoryHealthService;
+import com.asep.repositorymgmt.analyzer.dto.*;
 import com.asep.repositorymgmt.dto.CreateRepositoryRequest;
 import com.asep.repositorymgmt.dto.RepositoryResponse;
 import com.asep.repositorymgmt.service.GitSyncService;
 import com.asep.repositorymgmt.service.RepositoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,15 +17,17 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/repositories")
+@Tag(name = "Repository APIs")
 public class RepositoryController {
     private final RepositoryService repositoryService;
     private final GitSyncService gitSyncService;
     private final RepositoryAnalyzerService repositoryAnalyzerService;
-
-    public RepositoryController(RepositoryService repositoryService,GitSyncService gitSyncService,RepositoryAnalyzerService repositoryAnalyzerService){
+    private final RepositoryHealthService repositoryHealthService;
+    public RepositoryController(RepositoryService repositoryService,GitSyncService gitSyncService,RepositoryAnalyzerService repositoryAnalyzerService,RepositoryHealthService repositoryHealthService){
         this.gitSyncService = gitSyncService;
         this.repositoryService = repositoryService;
         this.repositoryAnalyzerService = repositoryAnalyzerService;
+        this.repositoryHealthService = repositoryHealthService;
     }
 
     @PostMapping
@@ -69,6 +73,48 @@ public class RepositoryController {
         return ApiResponse.success(
                 repositoryAnalyzerService.analyzeRepository(repositoryId),
                 "Repository analyzed successfully"
+        );
+    }
+
+    @GetMapping("/{repositoryId}/graph")
+    public ApiResponse<RepositoryGraphResponse> getGraph(
+            @PathVariable UUID repositoryId) {
+
+        return ApiResponse.success(repositoryAnalyzerService.getGraph(repositoryId),"Repository graph generated successfully");
+    }
+
+    @GetMapping("/{repositoryId}/health")
+    public ApiResponse<RepositoryHealthReport> getHealthReport(
+            @PathVariable UUID repositoryId) {
+
+        return ApiResponse.success(
+                repositoryAnalyzerService
+                        .getHealthReport(repositoryId),
+                "Repository health report generated successfully"
+        );
+    }
+
+    @GetMapping("/{repositoryId}/circular-dependencies")
+    public ApiResponse<List<CircularDependencyViolation>>
+    getCircularDependencies(
+            @PathVariable UUID repositoryId) {
+
+        return ApiResponse.success(
+                repositoryAnalyzerService
+                        .detectCircularDependencies(
+                                repositoryId),
+                "Circular dependencies detected"
+        );
+    }
+
+    @GetMapping("/{repositoryId}/unused-components")
+    public ApiResponse<List<UnusedComponentResponse>> getUnusedComponents(@PathVariable UUID repositoryId) {
+
+        return ApiResponse.success(
+                repositoryAnalyzerService
+                        .getUnusedComponents(
+                                repositoryId),
+                "Unused components detected"
         );
     }
 }

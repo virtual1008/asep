@@ -1,5 +1,6 @@
 package com.asep.repositorymgmt.analyzer.detector;
 
+import com.asep.repositorymgmt.analyzer.dto.DependencyInfo;
 import com.asep.repositorymgmt.analyzer.dto.DetectionResult;
 import com.asep.repositorymgmt.analyzer.parser.MavenPomParser;
 import org.springframework.stereotype.Component;
@@ -24,11 +25,15 @@ public class MavenDetector implements TechnologyDetector{
         File pomFile = new File(repositoryRoot,"pom.xml");
         String javaVersion = parser.detectJavaVersion(pomFile);
         String framework = parser.detectFramework(pomFile);
+        List<DependencyInfo> dependencies =
+                parser.extractDependencies(
+                        pomFile
+                );
         return new DetectionResult(
                 "JAVA",
                 framework,
                 "MAVEN",
                 javaVersion,
-                List.of());
+                dependencies);
     }
 }
